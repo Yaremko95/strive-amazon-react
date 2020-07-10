@@ -78,7 +78,11 @@ componentDidUpdate = (prevProps) => {
         return React.cloneElement(this.props.children, {... this.state,
             addToCart:(id)=>this.addToCart(id),
             removeFromCart:(id)=>this.removeFromCart(id),
-                decrementQuantity:(id)=>this.decrementQuantity(id)}
+                decrementQuantity:(id)=>this.decrementQuantity(id),
+                fetchData: ()=>this.fetchData(),
+            setTrigger:()=>this.props.setrigger,
+            trigger:this.props.trigger
+            }
 
             )
     }

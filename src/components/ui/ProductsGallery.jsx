@@ -7,7 +7,7 @@ function ProductsGallery(props) {
     return (
         <Col>
             <Row className={'row-cols-4'}>
-                {data.map(product => <Col className={'d-flex flex-column text-center justify-content-center align-items-center'}>
+                {data.map(product => <Col className={'d-flex flex-column text-center justify-content-center align-items-center mt-4'}>
                     <ProductContainer {...props} product={product}/>
                 </Col>)}
             </Row>
