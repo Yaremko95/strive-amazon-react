@@ -5,10 +5,7 @@ import DataSource from "../components/data/DataSource";
 function Home(props) {
 
     return (
-
             <HomeContainer {...props} />
-
-
 
     );
 }

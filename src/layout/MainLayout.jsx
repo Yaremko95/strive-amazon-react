@@ -8,7 +8,7 @@ function MainLayout(props) {
     return (
         <>
             <NavBar handleSearch={(query)=>setSearchQuery(query)} searchQuery={searchQuery}/>
-            <Container  className={"mt-5"}>{React.cloneElement(props.children, {searchQuery:searchQuery})}</Container>
+            <Container fluid  className={"mt-5"}>{React.cloneElement(props.children, {searchQuery:searchQuery})}</Container>
 
 
         </>
