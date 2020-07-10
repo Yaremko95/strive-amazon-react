@@ -13,7 +13,7 @@ function NavBar (props) {
 
     const {searchQuery, handleSearch} = props
         return (
-            <Navbar bg="dark" variant="dark">
+            <Navbar bg="dark" variant="dark" className={'d-flex justify-content-around'}>
                 <Navbar.Brand as={Link} to={"/"}>
                     Strive Amazon
                 </Navbar.Brand>
