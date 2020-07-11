@@ -9,7 +9,7 @@ function HomeContainer(props) {
   const { searchQuery } = props;
   const [trigger, setTrigger] = React.useState(false);
   const [filter, setFilter] = React.useState({ category: [] });
-
+  console.log(filter);
   return (
     <Row>
       <Col className={"col-3"}>
