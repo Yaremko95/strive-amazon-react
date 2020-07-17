@@ -26,6 +26,24 @@ function Filter(props) {
       <Form.Check
         type="checkbox"
         id={`radio`}
+        label={`books`}
+        onChange={() =>
+          toggleCheckBox((state) => {
+            const stateCopy = { ...state };
+            if (stateCopy.category.includes("books")) {
+              stateCopy.category = stateCopy.category.filter(
+                (item) => item !== "books"
+              );
+            } else {
+              stateCopy.category = [...stateCopy.category, "books"];
+            }
+            return stateCopy;
+          })
+        }
+      />
+      <Form.Check
+        type="checkbox"
+        id={`radio`}
         label={`laptops`}
         onChange={() =>
           toggleCheckBox((state) => {
@@ -36,24 +54,6 @@ function Filter(props) {
               );
             } else {
               stateCopy.category = [...stateCopy.category, "laptops"];
-            }
-            return stateCopy;
-          })
-        }
-      />
-      <Form.Check
-        type="checkbox"
-        id={`radio`}
-        label={`food`}
-        onChange={() =>
-          toggleCheckBox((state) => {
-            const stateCopy = { ...state };
-            if (stateCopy.category.includes("food")) {
-              stateCopy.category = stateCopy.category.filter(
-                (item) => item !== "food"
-              );
-            } else {
-              stateCopy.category = [...stateCopy.category, "food"];
             }
             return stateCopy;
           })
