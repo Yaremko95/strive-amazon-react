@@ -4,6 +4,7 @@ const initialState = {
   cart: [],
   quantity: 0,
   total: 0,
+  active: false,
 };
 const getTotal = (cart) => {
   return cart.reduce((acc, item) => acc + item.total, 0);
@@ -82,6 +83,13 @@ export default (state = initialState, action) => {
         total: getTotal(decreased),
         quantity: getQty(decreased),
       };
+    case C.TRIGGER_CART:
+      return {
+        ...state,
+        active: !state.active,
+      };
+    case C.EMPTY_CART:
+      return initialState;
     default:
       return state;
   }
