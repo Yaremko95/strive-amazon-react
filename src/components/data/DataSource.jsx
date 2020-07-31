@@ -23,7 +23,7 @@ class DataSource extends Component {
   fetchData = async () => {
     const { endpoint, query } = this.props;
     let response = await axios.get(endpoint, { params: { ...query } });
-    console.log(response);
+    console.log(".....", response);
     if (response.statusText === "OK") {
       this.setState({
         data: response.data.data,
