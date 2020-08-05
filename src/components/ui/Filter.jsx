@@ -2,7 +2,7 @@ import React, { memo, useState, useRef, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import ResizeObserver from "resize-observer-polyfill";
 import { useSpring, animated } from "react-spring";
-import { AiOutlinePlusSquare } from "react-icons/all";
+import { FiChevronDown } from "react-icons/fi";
 
 export function usePrevious(value) {
   const ref = useRef();
@@ -14,7 +14,11 @@ export function useMeasure() {
   const ref = useRef();
   const [bounds, set] = useState({ left: 0, top: 0, width: 0, height: 0 });
   const [ro] = useState(
-    () => new ResizeObserver(([entry]) => set(entry.contentRect))
+    () =>
+      new ResizeObserver(([entry]) => {
+        console.log(entry.contentRect);
+        set(entry.contentRect);
+      })
   );
   useEffect(() => {
     if (ref.current) ro.observe(ref.current);
@@ -27,7 +31,6 @@ const Tree = memo(({ children, name, style, defaultOpen = false }) => {
   const [isOpen, setOpen] = useState(defaultOpen);
   const previous = usePrevious(isOpen);
   const [bind, { height: viewHeight }] = useMeasure();
-  console.log("tree", bind, { height: viewHeight });
   const { height, opacity, transform } = useSpring({
     from: { height: 0, opacity: 0, transform: "translate3d(20px,0,0)" },
     to: {
@@ -46,12 +49,12 @@ const Tree = memo(({ children, name, style, defaultOpen = false }) => {
         whiteSpace: "nowrap",
         overflowX: "hidden",
         verticalAlign: "middle",
-        color: "black",
+
         fill: "white",
       }}
     >
-      <AiOutlinePlusSquare
-        style={{ opacity: children ? 1 : 0.3 }}
+      <FiChevronDown
+        style={{ opacity: children ? 1 : 0.3, fontSize: "1.5rem" }}
         onClick={() => setOpen(!isOpen)}
       />
       <span style={{ fontSize: "1.5rem" }}>{name}</span>
@@ -74,62 +77,40 @@ const Tree = memo(({ children, name, style, defaultOpen = false }) => {
 function Filter(props) {
   const { toggleCheckBox, filter } = props;
 
+  const handleCheckBox = (label) => {
+    console.log("label", label);
+    toggleCheckBox((state) => {
+      const stateCopy = { ...state };
+      if (stateCopy.category.includes(label)) {
+        stateCopy.category = stateCopy.category.filter(
+          (item) => item !== label
+        );
+      } else {
+        stateCopy.category = [...stateCopy.category, label];
+      }
+      return stateCopy;
+    });
+  };
   return (
     <Tree name={"Filter"}>
       <Form.Check
         type="checkbox"
-        id={`radio`}
+        id={`smartphones`}
         label={`smartphones`}
-        onChange={() =>
-          toggleCheckBox((state) => {
-            const stateCopy = { ...state };
-            if (stateCopy.category.includes("smartphones")) {
-              stateCopy.category = stateCopy.category.filter(
-                (item) => item !== "smartphones"
-              );
-            } else {
-              stateCopy.category = [...stateCopy.category, "smartphones"];
-            }
-            return stateCopy;
-          })
-        }
+        onChange={(e) => handleCheckBox(e.target.id)}
       />
 
       <Form.Check
         type="checkbox"
-        id={`radio`}
+        id={`books`}
         label={`books`}
-        onChange={() =>
-          toggleCheckBox((state) => {
-            const stateCopy = { ...state };
-            if (stateCopy.category.includes("books")) {
-              stateCopy.category = stateCopy.category.filter(
-                (item) => item !== "books"
-              );
-            } else {
-              stateCopy.category = [...stateCopy.category, "books"];
-            }
-            return stateCopy;
-          })
-        }
+        onChange={(e) => handleCheckBox(e.target.id)}
       />
       <Form.Check
         type="checkbox"
-        id={`radio`}
+        id={`laptops`}
         label={`laptops`}
-        onChange={() =>
-          toggleCheckBox((state) => {
-            const stateCopy = { ...state };
-            if (stateCopy.category.includes("laptops")) {
-              stateCopy.category = stateCopy.category.filter(
-                (item) => item !== "laptops"
-              );
-            } else {
-              stateCopy.category = [...stateCopy.category, "laptops"];
-            }
-            return stateCopy;
-          })
-        }
+        onChange={(e) => handleCheckBox(e.target.id)}
       />
     </Tree>
   );
