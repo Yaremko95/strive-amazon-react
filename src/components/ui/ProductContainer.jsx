@@ -4,10 +4,16 @@ import { MdEdit } from "react-icons/all";
 import ModalCustom from "./ModalCustom";
 import UpdateData from "../data/UpdateData";
 import ProductForm from "./ProductForm";
+import { connect } from "react-redux";
+import { fetchData, updateData } from "../../store";
+import { addToCart } from "../../store/cart/actions";
 
 function ProductContainer(props) {
-  const { product, addToCart, fetchData } = props;
-
+  const { product, fetchData, addToCart, updateData } = props;
+  const handleCart = (product) => {
+    updateData("http://localhost:3002/", "cart", "POST", product._id);
+    addToCart(product);
+  };
   return (
     <div>
       <ModalCustom trigger={<MdEdit className={"align-self-end"} />}>
@@ -26,11 +32,21 @@ function ProductContainer(props) {
       <span>{product.name}</span>
       <span>{product.description}</span>
       <span>{product.price}</span>
-      <Button onClick={() => addToCart(product._id)} variant="primary">
+      <Button onClick={() => handleCart(product)} variant="primary">
         Add to cart
       </Button>
     </div>
   );
 }
 
-export default ProductContainer;
+export default connect(
+  (state) => ({ ...state }),
+  (dispatch) => ({
+    updateData: (endpoint, param, method, id) => {
+      dispatch(updateData(endpoint, param, method, id));
+    },
+    addToCart: (product) => {
+      dispatch(addToCart(product));
+    },
+  })
+)(ProductContainer);

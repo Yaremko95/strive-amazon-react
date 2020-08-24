@@ -5,7 +5,7 @@ export const setCart = (data) => ({
   payload: data,
 });
 export const addToCart = (product) => ({
-  type: C.INCREASE_QTY,
+  type: C.ADD_TO_CART,
   payload: product,
 });
 export const emptyCart = () => ({

@@ -21,3 +21,12 @@ export const setProduct = (data) => ({
   type: C.SET_PRODUCT,
   payload: data,
 });
+
+export const setFilterCategory = (label) => ({
+  type: C.SET_FILTER_CATEGORY,
+  payload: label,
+});
+export const setSearchQuery = (query) => ({
+  type: C.SET_SEARCH_QUERY,
+  payload: query,
+});

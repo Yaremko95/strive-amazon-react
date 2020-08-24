@@ -3,7 +3,9 @@ import { Form } from "react-bootstrap";
 import ResizeObserver from "resize-observer-polyfill";
 import { useSpring, animated } from "react-spring";
 import { FiChevronDown } from "react-icons/fi";
-
+import { connect } from "react-redux";
+import { setFilterCategory } from "../../store/products/actions";
+import { fetchData } from "../../store";
 export function usePrevious(value) {
   const ref = useRef();
   useEffect(() => void (ref.current = value), [value]);
@@ -75,21 +77,11 @@ const Tree = memo(({ children, name, style, defaultOpen = false }) => {
   );
 });
 function Filter(props) {
-  const { toggleCheckBox, filter } = props;
-
+  const { products, setFilter, fetchdata } = props;
+  const { filter } = products;
   const handleCheckBox = (label) => {
-    console.log("label", label);
-    toggleCheckBox((state) => {
-      const stateCopy = { ...state };
-      if (stateCopy.category.includes(label)) {
-        stateCopy.category = stateCopy.category.filter(
-          (item) => item !== label
-        );
-      } else {
-        stateCopy.category = [...stateCopy.category, label];
-      }
-      return stateCopy;
-    });
+    setFilter(label);
+    fetchdata("http://localhost:3002/", "products");
   };
   return (
     <Tree name={"Filter"}>
@@ -108,12 +100,22 @@ function Filter(props) {
       />
       <Form.Check
         type="checkbox"
-        id={`laptops`}
-        label={`laptops`}
+        id={`smartphone`}
+        label={`smartphone`}
         onChange={(e) => handleCheckBox(e.target.id)}
       />
     </Tree>
   );
 }
 
-export default Filter;
+export default connect(
+  (state) => ({ ...state }),
+  (dispatch) => ({
+    setFilter: (label) => {
+      dispatch(setFilterCategory(label));
+    },
+    fetchdata: (endpoint, param, id) => {
+      dispatch(fetchData(endpoint, param, id));
+    },
+  })
+)(Filter);

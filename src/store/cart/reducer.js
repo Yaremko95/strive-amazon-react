@@ -7,7 +7,7 @@ const initialState = {
   active: false,
 };
 const getTotal = (cart) => {
-  return cart.reduce((acc, item) => acc + item.total, 0);
+  return cart.reduce((acc, item) => acc + parseInt(item.total), 0);
 };
 const getQty = (cart) => {
   return cart.reduce((acc, item) => acc + item.quantity, 0);

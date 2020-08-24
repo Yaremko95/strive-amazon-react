@@ -12,10 +12,13 @@ import { MdAddShoppingCart } from "react-icons/md";
 import { createUseStyles } from "react-jss";
 import ResizeObserver from "resize-observer-polyfill";
 import { Spring, Transition } from "react-spring/renderprops-universal";
-import { interpolate, useSpring, animated, config } from "react-spring";
+
+import { connect } from "react-redux";
+import { fetchData } from "../../store";
+import { setSearchQuery } from "../../store/products/actions";
 
 function NavBar(props) {
-  const { searchQuery, handleSearch } = props;
+  const { products, search, fetchData } = props;
   const useStyles = createUseStyles({
     container: {
       position: "fixed",
@@ -43,28 +46,30 @@ function NavBar(props) {
       ro.disconnect();
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [navHeight]);
   const handleScroll = () => {
-    // setScrollPos(document.body.getBoundingClientRect().top);
     setTransform(document.body.getBoundingClientRect().top < -navHeight);
-    // setScrollPos({
-    //   pos: document.body.getBoundingClientRect().top,
-    //   show: document.body.getBoundingClientRect().top < -navHeight,
-    // });
+    console.log(document.body.getBoundingClientRect().top, navHeight);
   };
-  // const { o, xyz } = useSpring({
-  //   from: { o: transform ? 0 : 1, xyz: transform ? [0, -20, 0] : [0, 0, 0] },
-  //   to: { o: 1, xyz: [0, 0, 0] },
-  //   reset: transform,
-  //   reverse: !transform,
-  // });
+
+  const handleSearch = (query) => {
+    search(query);
+    fetchData("http://localhost:3002/", "products");
+  };
   return (
     <Spring
       from={{
         opacity: transform ? "0" : "1",
         transform: `translate3d(0,${transform ? -20 : 0}px, 0)`,
+        background:
+          "linear-gradient(135deg, rgb(185, 198, 109) 0%, rgb(34, 48, 17) 100%)",
       }}
-      to={{ opacity: "1", transform: `translate3d(0,0, 0)` }}
+      to={{
+        opacity: "1",
+        transform: `translate3d(0,0, 0)`,
+        background:
+          "linear-gradient(135deg, rgb(192, 199, 165) 0%, rgb(31, 44, 31) 100%)",
+      }}
       reverse={!transform}
       reset={transform}
     >
@@ -72,8 +77,7 @@ function NavBar(props) {
         <div className={classes.container} style={{ ...props }} ref={ref}>
           <Navbar
             className={"d-flex justify-content-around"}
-            bg={"dark"}
-            variant={"dark"}
+            style={{ padding: "1rem 0" }}
           >
             <Navbar.Brand as={Link} to={"/"}>
               Strive Amazon
@@ -84,7 +88,7 @@ function NavBar(props) {
                 type="text"
                 placeholder="Search"
                 className="mr-sm-2"
-                value={searchQuery}
+                value={products.filter.name}
                 onChange={(e) => handleSearch(e.target.value)}
               />
             </Form>
@@ -93,73 +97,17 @@ function NavBar(props) {
         </div>
       )}
     </Spring>
-    // <animated.div
-    //   className={classes.container}
-    //   style={{
-    //     opacity: o.interpolate([0.1, 0.2, 0.6, 1], [1, 0.1, 0.5, 1]),
-    //     transform: xyz.interpolate(
-    //       (x, y, z) => `translate3d(${x}px, ${y}px, ${z}px)`
-    //     ),
-    //   }}
-    //   ref={ref}
-    // >
-    //   <Navbar
-    //     className={"d-flex justify-content-around"}
-    //     bg={"dark"}
-    //     variant={"dark"}
-    //   >
-    //     <Navbar.Brand as={Link} to={"/"}>
-    //       Strive Amazon
-    //     </Navbar.Brand>
-    //
-    //     <Form inline>
-    //       <FormControl
-    //         type="text"
-    //         placeholder="Search"
-    //         className="mr-sm-2"
-    //         value={searchQuery}
-    //         onChange={(e) => handleSearch(e.target.value)}
-    //       />
-    //     </Form>
-    //     <MdAddShoppingCart style={{ color: "white", fontSize: "2rem" }} />
-    //   </Navbar>
-    // </animated.div>
-
-    // <Transition
-    //   items={transform}
-    //   enter={{ opacity: 1, height: navHeight }}
-    //   from={{ opacity: 0, height: 0 }}
-    //   leave={{ opacity: 0, height: 0 }}
-    // >
-    //   {(item) =>
-    //     item &&
-    //     ((props) => (
-    //       <div className={classes.container} style={props} ref={ref}>
-    //         <Navbar
-    //           bg="dark"
-    //           variant="dark"
-    //           className={"d-flex justify-content-around"}
-    //         >
-    //           <Navbar.Brand as={Link} to={"/"}>
-    //             Strive Amazon
-    //           </Navbar.Brand>
-    //
-    //           <Form inline>
-    //             <FormControl
-    //               type="text"
-    //               placeholder="Search"
-    //               className="mr-sm-2"
-    //               value={searchQuery}
-    //               onChange={(e) => handleSearch(e.target.value)}
-    //             />
-    //           </Form>
-    //           <MdAddShoppingCart style={{ color: "white", fontSize: "2rem" }} />
-    //         </Navbar>
-    //       </div>
-    //     ))
-    //   }
-    // </Transition>
   );
 }
 
-export default NavBar;
+export default connect(
+  (state) => ({ ...state }),
+  (dispatch) => ({
+    fetchData: (endpoint, param, id) => {
+      dispatch(fetchData(endpoint, param, id));
+    },
+    search: (query) => {
+      dispatch(setSearchQuery(query));
+    },
+  })
+)(NavBar);

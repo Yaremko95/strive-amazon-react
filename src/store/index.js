@@ -1,4 +1,7 @@
-import { applyMiddleware, combineReducers, compose } from "redux";
+import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+import products from "./products/reducer";
+import cart from "./cart/reducer";
+
 import thunk from "redux-thunk";
 import axios from "axios";
 import queryString from "query-string";
@@ -19,10 +22,11 @@ export const fetchData = (endpoint, param, id) => async (
   if (!id) {
     let query =
       param === "products"
-        ? queryString.stringify(getState().filter, {
+        ? queryString.stringify(getState().products.filter, {
             arrayFormat: "bracket",
           })
         : "";
+
     response = await axios.get(`${endpoint + param}?${query}`);
   } else {
     response = await axios.get(endpoint + param + id);
@@ -60,3 +64,10 @@ export const updateData = (endpoint, param, method, id = "", body = {}) => (
       dispatch(setError("Something went wrong"));
     });
 };
+const rootReducer = combineReducers({
+  products,
+  cart,
+});
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const enhancer = composeEnhancers(applyMiddleware(thunk));
+export default () => createStore(rootReducer, enhancer);
